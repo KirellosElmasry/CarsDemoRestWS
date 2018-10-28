@@ -32,6 +32,9 @@ public class CarController {
 
     private final CarDAO carDAO;
 
+    //for Token based authentication
+    private final String apiKey = "1234";
+
     @Autowired
     public CarController(CarDAO carDAO) {
         this.carDAO = carDAO;
@@ -39,7 +42,7 @@ public class CarController {
 
     @GetMapping("/getAllData")
     public ResponseEntity<List<Car>> getAllCars(@RequestHeader("apikey") String api_key) {
-        if (api_key.equals("1234")) {
+        if (api_key.equals(apiKey)) {
             try {
                 return new ResponseEntity<>(carDAO.findAll(), HttpStatus.OK);
             } catch (Exception e) {
@@ -52,9 +55,10 @@ public class CarController {
         }
     }
 
+    // insert dummy data for testing
     @GetMapping("/insertData")
     public ResponseEntity<String> insertCarsData(@RequestHeader("apikey") String api_key) {
-        if (api_key.equals("1234")) {
+        if (api_key.equals(apiKey)) {
             try {
                 for (int i = 1; i < 10; i++) {
                     carDAO.saveAndFlush(new Car("brand " + i, "model " + i, "productionYear " + i, "modelDetails " + i));
@@ -71,7 +75,7 @@ public class CarController {
 
     @GetMapping("/get/{id}")
     public ResponseEntity<Car> getCarById(@RequestHeader("apikey") String api_key, @PathVariable("id") long id) {
-        if (api_key.equals("1234")) {
+        if (api_key.equals(apiKey)) {
             try {
                 return new ResponseEntity<>(carDAO.findById(id).get(), HttpStatus.OK);
             } catch (NoSuchElementException e) {
@@ -85,9 +89,13 @@ public class CarController {
 
     @GetMapping("/delete/{id}")
     public ResponseEntity<String> deleteCarById(@RequestHeader("apikey") String api_key, @PathVariable("id") long id) {
-        if (api_key.equals("1234")) {
+        if (api_key.equals(apiKey)) {
             try {
-                carDAO.deleteById(id);
+                Car deletedCar = carDAO.findById(id).get();
+
+                if (deletedCar != null) {
+                    carDAO.delete(deletedCar);
+                }
             } catch (NoSuchElementException e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(" Car with Id : " + id + " not found in database!", HttpStatus.NOT_FOUND);
@@ -104,19 +112,22 @@ public class CarController {
     @RequestMapping(value = {"/update"}, method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody
     public ResponseEntity<String> updateCar(@RequestHeader("apikey") String api_key, @RequestBody Car car) {
-        if (api_key.equals("1234")) {
+        if (api_key.equals(apiKey)) {
             try {
-                Car newCar = carDAO.findById(car.getCarId()).get();
+                if (car.getCarId() != null) {
+                    Car newCar = carDAO.findById(car.getCarId()).get();
 
-                if (newCar != null) {
-                    carDAO.saveAndFlush(car);
+                    if (newCar != null) {
+                        newCar = car;
+                        carDAO.saveAndFlush(newCar);
+                    }
+                } else {
+                    return new ResponseEntity<>(" Please insert Car Id ", HttpStatus.BAD_REQUEST);
                 }
-            }
-            catch (NoSuchElementException e) {
+            } catch (NoSuchElementException e) {
                 e.printStackTrace();
-                 return new ResponseEntity<>(" Car with Id : " + car.getCarId() + " not found in database!", HttpStatus.NOT_FOUND);             
-            } 
-            catch (Exception e) {
+                return new ResponseEntity<>(" Car with Id : " + car.getCarId() + " not found in database!", HttpStatus.NOT_FOUND);
+            } catch (Exception e) {
                 e.printStackTrace();
                 return new ResponseEntity<>("Error when inserting Car", HttpStatus.EXPECTATION_FAILED);
             }
@@ -129,11 +140,15 @@ public class CarController {
 
     @RequestMapping(value = {"/add"}, method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody
-    public ResponseEntity<String> addCar(@RequestHeader("apikey") String api_key, @RequestBody Car car) {
-        if (api_key.equals("1234")) {
+    public ResponseEntity<String> addNewCar(@RequestHeader("apikey") String api_key, @RequestBody Car car) {
+        if (api_key.equals(apiKey)) {
 
             try {
-                carDAO.saveAndFlush(car);
+                if (car.getCarId() == null) {
+                    carDAO.saveAndFlush(car);
+                } else {
+                    return new ResponseEntity<>(" Please remove Car Id it is generated automatically.", HttpStatus.BAD_REQUEST);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 return new ResponseEntity<>("error when adding new Car", HttpStatus.EXPECTATION_FAILED);
