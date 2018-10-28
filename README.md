@@ -1,6 +1,6 @@
-# Project Title
+# CarsDemoRestWS
 
-CarsDemoRestWS
+
 
 
 ### How to Run
@@ -21,7 +21,7 @@ This application is packaged as a jar which has Tomcat 8 embedded. No Tomcat or 
 
 ## Authors
 
-* **Kirellos Elmasry** - *Initial work* - [PurpleBooth](https://github.com/KirellosElmasry)
+* **Kirellos Elmasry** - *Initial work* - (https://github.com/KirellosElmasry)
 
 
 
