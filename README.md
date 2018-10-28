@@ -5,7 +5,7 @@
 
 ### How to Run
 
-This application runs using Spring boot and packaged as a jar which has Tomcat 8 embedded. No Tomcat or JBoss installation is necessary. You run it using the java -jar command. I used flywaydb to db version control.
+This application runs using Spring boot and packaged as a jar which has Tomcat 8 embedded. No Tomcat or JBoss installation is necessary. You run it using the java -jar command. I used flywaydb as db version control for in memory data base concept.
 
 
 -Clone this repository
@@ -14,14 +14,14 @@ This application runs using Spring boot and packaged as a jar which has Tomcat 8
 
 
 
-## Documentation on REST API URL
+## REST API Documentation URL
 
 (https://documenter.getpostman.com/view/3459852/RWgxvahn)
 
 
 ## Authors
 
-* **Kirellos Elmasry** - *Initial work* - (https://github.com/KirellosElmasry)
+* **Kirellos Elmasry**  (https://github.com/KirellosElmasry)
 
 
 
