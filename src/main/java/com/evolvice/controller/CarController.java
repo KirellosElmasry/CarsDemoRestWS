@@ -7,8 +7,8 @@ package com.evolvice.controller;
 
 import com.evolvice.dao.CarDAO;
 import com.evolvice.entity.Car;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +41,7 @@ public class CarController {
             return carDAO.findAll();
 
         } else {
-            return new ArrayList<>();
+            return null;
         }
     }
 
@@ -65,9 +65,14 @@ public class CarController {
     @GetMapping("/get/{id}")
     public Car getCarById(@RequestHeader("apikey") String api_key, @PathVariable("id") long id) {
         if (api_key.equals("1234")) {
-            return carDAO.findById(id).get();
+            try {
+                return carDAO.findById(id).get();
+            } catch (NoSuchElementException e) {
+                e.printStackTrace();
+                return null;
+            }
         } else {
-            return new Car();
+            return null;
         }
     }
 
@@ -91,7 +96,7 @@ public class CarController {
     public String updateCar(@RequestHeader("apikey") String api_key, @RequestBody Car car) {
         if (api_key.equals("1234")) {
             try {
-                carDAO.save(car);
+                carDAO.saveAndFlush(car);
             } catch (Exception e) {
                 e.printStackTrace();
                 return "Error when inserting Car";

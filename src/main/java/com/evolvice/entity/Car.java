@@ -23,15 +23,15 @@ public class Car implements Serializable{
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column
+    @Column(name = "car_id")
     private Long carId;
-    @Column
+    @Column(name="brand")
     private String brand;
-    @Column
+    @Column(name = "model")
     private String model;
-    @Column
+    @Column(name = "production_year")
     private String productionYear;
-    @Column
+    @Column(name = "model_details")
     private String modelDetails;
 
     public Car() {
